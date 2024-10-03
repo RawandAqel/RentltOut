@@ -3,14 +3,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
 const jwt = require('jsonwebtoken');
-
-// Create a MySQL connection
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-});
+const connection = require('../database/db_connection'); // Import the MySQL connection
 
 // Login endpoint
 router.post('/login', (req, res) => {
@@ -21,7 +14,7 @@ router.post('/login', (req, res) => {
         return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    // Query to find the user
+    // Query to find the user by email
     const query = 'SELECT * FROM users WHERE email = ?';
     connection.query(query, [email], (err, results) => {
         if (err) {
@@ -41,16 +34,25 @@ router.post('/login', (req, res) => {
         }
 
         // Generate token
-        const token = jwt.sign({ id: user.user_id, role: user.role }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: '1h', // Token expiration time
         });
 
-        // Send response
-        res.json({
-            message: 'Login successful',
-            token,
-            user_id: user.id,
-            role: user.role, // Send the user role
+        // Update the user's login_token in the database
+        const updateQuery = 'UPDATE users SET login_token = ? WHERE id = ?';
+        connection.query(updateQuery, [token, user.id], (updateErr) => {
+            if (updateErr) {
+                console.error('Database update error:', updateErr);
+                return res.status(500).json({ message: 'Internal server error.' });
+            }
+
+            // Send response with token, user ID, and role
+            res.json({
+                message: 'Login successful',
+                token,
+                user_id: user.id,
+                role: user.role,
+            });
         });
     });
 });
