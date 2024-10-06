@@ -2,19 +2,26 @@
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
-const authRoutes = require('./routes/users/auth'); // Import the auth routes
-const signupRoutes = require('./routes/users/signup'); // Import the auth routes
-const logoutRoutes = require('./routes/users/logout'); // Import the auth routes
+// Users
+const authRoutes = require('./routes/users/auth'); 
+const signupRoutes = require('./routes/users/signup'); 
+const logoutRoutes = require('./routes/users/logout'); 
+// Items
+const get_all_itemsRoutes = require('./routes/items/get_all_items'); 
+const items_filterRoutes = require('./routes/items/items_filter'); 
 
 const app = express();
 
 // Middleware to parse JSON
 app.use(express.json());
 
-// Use the authentication routes
+//Users
 app.use('/api', authRoutes);
 app.use('/api', signupRoutes);
 app.use('/api', logoutRoutes);
+// Items
+app.use('/api', get_all_itemsRoutes);
+app.use('/api', items_filterRoutes);
 
 // Connect to MySQL
 const connection = mysql.createConnection({
