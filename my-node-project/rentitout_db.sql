@@ -720,3 +720,21 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- create a barter table
+--
+CREATE TABLE barters (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item_id INT,
+    barter_item_id INT, -- The item being offered for barter
+    renter_id INT, -- The person who is offering the barter
+    start_date DATE,
+    end_date DATE,
+    status ENUM('pending', 'approved', 'returned') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (item_id) REFERENCES items(id),
+    FOREIGN KEY (barter_item_id) REFERENCES items(id),
+    FOREIGN KEY (renter_id) REFERENCES users(id)
+);
