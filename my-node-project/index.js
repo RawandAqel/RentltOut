@@ -15,6 +15,28 @@ const app = express();
 // Middleware to parse JSON
 app.use(express.json());
 
+//insurance safty verifecation damagepolicy
+const verifyIdentityRoutes = require('./routes/users/verify_identity');
+const depositManagementRoutes = require('./routes/rentals/deposit_management');
+const insuranceManagementRoutes = require('./routes/rentals/insurance_management');
+const reportUserRoutes = require('./routes/users/report_user');
+const documentManagementRoutes = require('./routes/users/document_management');
+const manualVerificationRoutes = require('./routes/users/manual_verification');
+const damagePolicyRoutes = require('./routes/rentals/damage_policy');
+
+
+app.use('/api/verify', verifyIdentityRoutes);
+app.use('/api/deposit', depositManagementRoutes);
+app.use('/api/insurance', insuranceManagementRoutes);
+app.use('/api/report', reportUserRoutes);
+app.use('/api/documents', documentManagementRoutes);
+app.use('/api/manual-verification', manualVerificationRoutes);
+app.use('/api/damage-policy', damagePolicyRoutes);
+
+
+
+
+
 //Users
 app.use('/api', authRoutes);
 app.use('/api', signupRoutes);
