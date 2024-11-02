@@ -30,7 +30,7 @@ exports.createRental = async (rentalData) => {
 // Create a barter
 exports.createBarter = async (barterData) => {
   const { item_id, barter_item_id, renter_id, start_date, end_date } = barterData;
-  const query = `INSERT INTO barter (item_id, barter_item_id, renter_id, start_date, end_date, status, created_at) 
+  const query = `INSERT INTO barters (item_id, barter_item_id, renter_id, start_date, end_date, status, created_at) 
                  VALUES (?, ?, ?, ?, ?, 'pending', NOW())`;
   const result = await db.query(query, [item_id, barter_item_id, renter_id, start_date, end_date]);
   return result.insertId;
