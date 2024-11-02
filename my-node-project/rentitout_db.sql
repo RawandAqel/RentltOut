@@ -738,3 +738,102 @@ CREATE TABLE barters (
     FOREIGN KEY (barter_item_id) REFERENCES items(id),
     FOREIGN KEY (renter_id) REFERENCES users(id)
 );
+
+-- Schedule verification via email and phone
+CREATE TABLE verification_codes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    code VARCHAR(10) NOT NULL,
+    expiration DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE user_verifications (
+    user_id INT PRIMARY KEY,
+    verified_email BOOLEAN DEFAULT FALSE,
+    verified_phone BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Document upload schedule
+CREATE TABLE user_documents (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    document_type VARCHAR(50),
+    document_path VARCHAR(255),
+    verified_status ENUM('pending', 'rejected', 'approved') DEFAULT 'pending',
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Manual verification schedule
+CREATE TABLE manual_verifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    status ENUM('pending', 'rejected', 'approved') DEFAULT 'pending',
+    reviewer_id INT,
+    review_notes TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Security deposit table
+
+CREATE TABLE rental_deposits (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    rental_id INT NOT NULL,
+    deposit_amount DECIMAL(10, 2),
+    status ENUM('held', 'deducted', 'refunded') DEFAULT 'held',
+    FOREIGN KEY (rental_id) REFERENCES rentals(id)
+);
+
+-- Item insurance schedule
+CREATE TABLE rental_insurance (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    rental_id INT NOT NULL,
+    insurance_fee DECIMAL(10, 2),
+    insurance_status ENUM('active', 'expired') DEFAULT 'active',
+    policy_details TEXT,
+    FOREIGN KEY (rental_id) REFERENCES rentals(id)
+);
+
+-- Damage coverage policy schedule
+CREATE TABLE damage_policies (
+    policy_id INT PRIMARY KEY AUTO_INCREMENT,
+    description TEXT,
+    minor_damage_fee DECIMAL(10, 2),
+    major_damage_fee DECIMAL(10, 2)
+);
+
+--User reporting table
+CREATE TABLE reports (
+    report_id INT PRIMARY KEY AUTO_INCREMENT,
+    reported_user_id INT NOT NULL,
+    reporter_user_id INT NOT NULL,
+    reason TEXT,
+    evidence_path VARCHAR(255),
+    status ENUM('pending', 'rejected', 'approved') DEFAULT 'pending',
+    FOREIGN KEY (reported_user_id) REFERENCES users(id),
+    FOREIGN KEY (reporter_user_id) REFERENCES users(id)
+);
+
+--Complaint review table
+CREATE TABLE report_reviews (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    report_id INT NOT NULL,
+    reviewer_id INT,
+    action_taken TEXT,
+    notes TEXT,
+    FOREIGN KEY (report_id) REFERENCES reports(report_id)
+);
+
+
+INSERT INTO verification_codes (user_id, code, expiration) VALUES (1, '123456', '2024-11-05 10:00:00'), (2, '789101', '2024-11-06 11:00:00');
+
+INSERT INTO user_verifications (user_id, verified_email, verified_phone) VALUES (1, TRUE, FALSE), (2, FALSE, FALSE);
+
+INSERT INTO user_documents (user_id, document_type, document_path, verified_status) VALUES (1, 'identity', '/uploads/identity_user1.pdf', 'approved'), (2, 'license', '/uploads/license_user2.pdf', 'pending');
+
+INSERT INTO manual_verifications (user_id, status, reviewer_id, review_notes) VALUES (1, 'approved', 3, 'Verified manually.'), (2, 'pending', NULL, 'Awaiting manual verification.');
+
+INSERT INTO damage_policies (description, minor_damage_fee, major_damage_fee) VALUES ('Standard Damage Policy', 50.00, 200.00), ('Premium Damage Policy', 100.00, 500.00);
+
+ INSERT INTO `rentals` (`id`, `item_id`, `renter_id`, `start_date`, `end_date`, `total_price`, `status`) VALUES (1, 1, 2, '2024-10-01', '2024-10-05', 75.00, 'approved'), (2, 3, 1, '2024-10-06', '2024-10-10', 250.00, 'returned'), (3, 5, 4, '2024-10-11', '2024-10-15', 100.00, 'pending'), (4, 2, 3, '2024-10-16', '2024-10-20', 50.00, 'approved'), (5, 4, 5, '2024-10-21', '2024-10-25', 10.00, 'approved'), (6, 6, 6, '2024-10-26', '2024-10-30', 125.00, 'returned'), (7, 7, 7, '2024-11-01', '2024-11-05', 75.00, 'pending'), (8, 8, 8, '2024-11-06', '2024-11-10', 40.00, 'approved'), (9, 9, 9, '2024-11-11', '2024-11-15', 15.00, 'approved'), (10, 10, 10, '2024-11-16', '2024-11-20', 60.00, 'pending');
