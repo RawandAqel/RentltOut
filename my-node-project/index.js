@@ -24,6 +24,14 @@ const documentManagementRoutes = require('./routes/users/document_management');
 const manualVerificationRoutes = require('./routes/users/manual_verification');
 const damagePolicyRoutes = require('./routes/rentals/damage_policy');
 
+const Submit_feedback = require('./routes/Recommendations/Submit Feedback API');
+const Submit_Reco = require('./routes/Recommendations/Submit Recommendation API');
+const Get_Feedback = require('./routes/Recommendations/Get All Feedback API');
+const Get_Reco = require('./routes/Recommendations/Get All Recommendations API');
+const Log_activity = require('./routes/Recommendations/API to Log User Activity');
+const Get_activity = require('./routes/Recommendations/API to Retrieve User Activity');
+const Get_Trending = require('./routes/Recommendations/API to Retrieve Trending Items');
+
 
 app.use('/api/verify', verifyIdentityRoutes);
 app.use('/api/deposit', depositManagementRoutes);
@@ -36,7 +44,6 @@ app.use('/api/damage-policy', damagePolicyRoutes);
 
 
 
-
 //Users
 app.use('/api', authRoutes);
 app.use('/api', signupRoutes);
@@ -44,6 +51,14 @@ app.use('/api', logoutRoutes);
 // Items
 app.use('/api', get_all_itemsRoutes);
 app.use('/api', items_filterRoutes);
+// Recommendations
+app.use('/api', Submit_feedback);
+app.use('/api', Submit_Reco);
+app.use('/api', Get_Feedback);
+app.use('/api', Get_Reco);
+app.use('/api', Log_activity);
+app.use('/api', Get_activity);
+app.use('/api', Get_Trending);
 
 
 
