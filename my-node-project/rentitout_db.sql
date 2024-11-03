@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2024 at 05:58 AM
+-- Generation Time: Nov 03, 2024 at 03:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `activities`
+--
+
+CREATE TABLE `activities` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `activity_type` enum('view','like','rent') NOT NULL,
+  `activity_time` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `activities`
+--
+
+INSERT INTO `activities` (`id`, `user_id`, `item_id`, `activity_type`, `activity_time`) VALUES
+(1, 1, 5, 'view', '2024-11-03 14:17:18'),
+(2, 4, 5, 'view', '2024-11-03 14:27:13'),
+(3, 4, 5, 'like', '2024-11-03 14:27:31'),
+(4, 10, 5, 'like', '2024-11-03 14:27:36'),
+(5, 11, 5, 'like', '2024-11-03 14:27:43'),
+(6, 7, 5, 'like', '2024-11-03 14:27:46'),
+(7, 7, 5, 'rent', '2024-11-03 14:27:51'),
+(8, 1, 5, 'rent', '2024-11-03 14:28:05'),
+(9, 1, 3, 'rent', '2024-11-03 14:28:08'),
+(10, 5, 3, 'rent', '2024-11-03 14:28:13'),
+(11, 3, 3, 'rent', '2024-11-03 14:28:16'),
+(12, 2, 3, 'rent', '2024-11-03 14:28:18'),
+(13, 2, 3, 'view', '2024-11-03 14:28:27');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `admin`
 --
 
@@ -40,6 +73,24 @@ INSERT INTO `admin` (`id`, `user_id`) VALUES
 (1, 3),
 (2, 9),
 (3, 25);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `barters`
+--
+
+CREATE TABLE `barters` (
+  `id` int(11) NOT NULL,
+  `item_id` int(11) DEFAULT NULL,
+  `barter_item_id` int(11) DEFAULT NULL,
+  `renter_id` int(11) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `status` enum('pending','approved','returned') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -150,6 +201,49 @@ INSERT INTO `client` (`id`, `user_id`, `phone_number`, `address`) VALUES
 (23, 24, '+970599951357', '357 Tareq Street, City'),
 (24, 25, '+970599357852', '654 Noor Street, City'),
 (25, 3, '+970599124987', '369 Rami Street, City');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `damage_policies`
+--
+
+CREATE TABLE `damage_policies` (
+  `policy_id` int(11) NOT NULL,
+  `description` text DEFAULT NULL,
+  `minor_damage_fee` decimal(10,2) DEFAULT NULL,
+  `major_damage_fee` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `damage_policies`
+--
+
+INSERT INTO `damage_policies` (`policy_id`, `description`, `minor_damage_fee`, `major_damage_fee`) VALUES
+(1, 'Standard Damage Policy', 50.00, 200.00),
+(2, 'Premium Damage Policy', 100.00, 500.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `feedback_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `feedback_text` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `feedback`
+--
+
+INSERT INTO `feedback` (`feedback_id`, `user_id`, `feedback_text`, `created_at`) VALUES
+(1, 1, 'I really enjoy using the platform, but I would love to see more items available in my area.', '2024-11-03 13:16:14'),
+(2, 3, 'I really enjoy using the platform, but I would love to see more items available in my area.', '2024-11-03 13:16:27'),
+(3, 10, 'Good job', '2024-11-03 13:16:44');
 
 -- --------------------------------------------------------
 
@@ -324,6 +418,28 @@ INSERT INTO `location` (`id`, `city`, `state`, `country`, `postal_code`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `manual_verifications`
+--
+
+CREATE TABLE `manual_verifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` enum('pending','rejected','approved') DEFAULT 'pending',
+  `reviewer_id` int(11) DEFAULT NULL,
+  `review_notes` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `manual_verifications`
+--
+
+INSERT INTO `manual_verifications` (`id`, `user_id`, `status`, `reviewer_id`, `review_notes`) VALUES
+(1, 1, 'approved', 3, 'Verified manually.'),
+(2, 2, 'pending', NULL, 'Awaiting manual verification.');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `messages`
 --
 
@@ -367,6 +483,27 @@ CREATE TABLE `payments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `recommendations`
+--
+
+CREATE TABLE `recommendations` (
+  `recommendation_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `recommendation_text` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `recommendations`
+--
+
+INSERT INTO `recommendations` (`recommendation_id`, `user_id`, `recommendation_text`, `created_at`) VALUES
+(1, 1, 'It would be great to have a category for outdoor adventure gear.', '2024-11-03 13:35:52'),
+(2, 5, 'It would be great to have a category for outdoor adventure gear.', '2024-11-03 13:35:58');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rentals`
 --
 
@@ -380,6 +517,64 @@ CREATE TABLE `rentals` (
   `status` enum('pending','approved','returned') NOT NULL DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rentals`
+--
+
+INSERT INTO `rentals` (`id`, `item_id`, `renter_id`, `start_date`, `end_date`, `total_price`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, '2024-10-01', '2024-10-05', 75.00, 'approved', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(2, 3, 1, '2024-10-06', '2024-10-10', 250.00, 'returned', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(3, 5, 4, '2024-10-11', '2024-10-15', 100.00, 'pending', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(4, 2, 3, '2024-10-16', '2024-10-20', 50.00, 'approved', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(5, 4, 5, '2024-10-21', '2024-10-25', 10.00, 'approved', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(6, 6, 6, '2024-10-26', '2024-10-30', 125.00, 'returned', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(7, 7, 7, '2024-11-01', '2024-11-05', 75.00, 'pending', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(8, 8, 8, '2024-11-06', '2024-11-10', 40.00, 'approved', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(9, 9, 9, '2024-11-11', '2024-11-15', 15.00, 'approved', '2024-11-03 14:46:44', '2024-11-03 14:46:44'),
+(10, 10, 10, '2024-11-16', '2024-11-20', 60.00, 'pending', '2024-11-03 14:46:44', '2024-11-03 14:46:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rental_deposits`
+--
+
+CREATE TABLE `rental_deposits` (
+  `id` int(11) NOT NULL,
+  `rental_id` int(11) NOT NULL,
+  `deposit_amount` decimal(10,2) DEFAULT NULL,
+  `status` enum('held','deducted','refunded') DEFAULT 'held'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rental_insurance`
+--
+
+CREATE TABLE `rental_insurance` (
+  `id` int(11) NOT NULL,
+  `rental_id` int(11) NOT NULL,
+  `insurance_fee` decimal(10,2) DEFAULT NULL,
+  `insurance_status` enum('active','expired') DEFAULT 'active',
+  `policy_details` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reports`
+--
+
+CREATE TABLE `reports` (
+  `report_id` int(11) NOT NULL,
+  `reported_user_id` int(11) NOT NULL,
+  `reporter_user_id` int(11) NOT NULL,
+  `reason` text DEFAULT NULL,
+  `evidence_path` varchar(255) DEFAULT NULL,
+  `status` enum('pending','rejected','approved') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -445,9 +640,80 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`, `login_token
 (24, 'tareq123', 'password24', 'tareq@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
 (25, 'noor123', 'password25', 'noor@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_documents`
+--
+
+CREATE TABLE `user_documents` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `document_type` varchar(50) DEFAULT NULL,
+  `document_path` varchar(255) DEFAULT NULL,
+  `verified_status` enum('pending','rejected','approved') DEFAULT 'pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_documents`
+--
+
+INSERT INTO `user_documents` (`id`, `user_id`, `document_type`, `document_path`, `verified_status`) VALUES
+(1, 1, 'identity', '/uploads/identity_user1.pdf', 'approved'),
+(2, 2, 'license', '/uploads/license_user2.pdf', 'pending');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_verifications`
+--
+
+CREATE TABLE `user_verifications` (
+  `user_id` int(11) NOT NULL,
+  `verified_email` tinyint(1) DEFAULT 0,
+  `verified_phone` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_verifications`
+--
+
+INSERT INTO `user_verifications` (`user_id`, `verified_email`, `verified_phone`) VALUES
+(1, 1, 0),
+(2, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `verification_codes`
+--
+
+CREATE TABLE `verification_codes` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `expiration` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `verification_codes`
+--
+
+INSERT INTO `verification_codes` (`id`, `user_id`, `code`, `expiration`) VALUES
+(1, 1, '123456', '2024-11-05 10:00:00'),
+(2, 2, '789101', '2024-11-06 11:00:00');
+
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `activities`
+--
+ALTER TABLE `activities`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `item_id` (`item_id`);
 
 --
 -- Indexes for table `admin`
@@ -455,6 +721,15 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`, `login_token
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `barters`
+--
+ALTER TABLE `barters`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `item_id` (`item_id`),
+  ADD KEY `barter_item_id` (`barter_item_id`),
+  ADD KEY `renter_id` (`renter_id`);
 
 --
 -- Indexes for table `category`
@@ -475,6 +750,19 @@ ALTER TABLE `category_items`
 --
 ALTER TABLE `client`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `damage_policies`
+--
+ALTER TABLE `damage_policies`
+  ADD PRIMARY KEY (`policy_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -507,6 +795,13 @@ ALTER TABLE `location`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `manual_verifications`
+--
+ALTER TABLE `manual_verifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `messages`
 --
 ALTER TABLE `messages`
@@ -529,12 +824,41 @@ ALTER TABLE `payments`
   ADD KEY `rental_id` (`rental_id`);
 
 --
+-- Indexes for table `recommendations`
+--
+ALTER TABLE `recommendations`
+  ADD PRIMARY KEY (`recommendation_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `rentals`
 --
 ALTER TABLE `rentals`
   ADD PRIMARY KEY (`id`),
   ADD KEY `item_id` (`item_id`),
   ADD KEY `renter_id` (`renter_id`);
+
+--
+-- Indexes for table `rental_deposits`
+--
+ALTER TABLE `rental_deposits`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `rental_id` (`rental_id`);
+
+--
+-- Indexes for table `rental_insurance`
+--
+ALTER TABLE `rental_insurance`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `rental_id` (`rental_id`);
+
+--
+-- Indexes for table `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`report_id`),
+  ADD KEY `reported_user_id` (`reported_user_id`),
+  ADD KEY `reporter_user_id` (`reporter_user_id`);
 
 --
 -- Indexes for table `reviews`
@@ -553,14 +877,46 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `user_documents`
+--
+ALTER TABLE `user_documents`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `user_verifications`
+--
+ALTER TABLE `user_verifications`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `verification_codes`
+--
+ALTER TABLE `verification_codes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `activities`
+--
+ALTER TABLE `activities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `barters`
+--
+ALTER TABLE `barters`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -579,6 +935,18 @@ ALTER TABLE `category_items`
 --
 ALTER TABLE `client`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `damage_policies`
+--
+ALTER TABLE `damage_policies`
+  MODIFY `policy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `gps_location_from`
@@ -605,6 +973,12 @@ ALTER TABLE `location`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
+-- AUTO_INCREMENT for table `manual_verifications`
+--
+ALTER TABLE `manual_verifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
@@ -623,10 +997,34 @@ ALTER TABLE `payments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `recommendations`
+--
+ALTER TABLE `recommendations`
+  MODIFY `recommendation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `rentals`
 --
 ALTER TABLE `rentals`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `rental_deposits`
+--
+ALTER TABLE `rental_deposits`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `rental_insurance`
+--
+ALTER TABLE `rental_insurance`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -641,14 +1039,41 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
+-- AUTO_INCREMENT for table `user_documents`
+--
+ALTER TABLE `user_documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `verification_codes`
+--
+ALTER TABLE `verification_codes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `activities`
+--
+ALTER TABLE `activities`
+  ADD CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `activities_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);
 
 --
 -- Constraints for table `admin`
 --
 ALTER TABLE `admin`
   ADD CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `barters`
+--
+ALTER TABLE `barters`
+  ADD CONSTRAINT `barters_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`),
+  ADD CONSTRAINT `barters_ibfk_2` FOREIGN KEY (`barter_item_id`) REFERENCES `items` (`id`),
+  ADD CONSTRAINT `barters_ibfk_3` FOREIGN KEY (`renter_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `category_items`
@@ -662,6 +1087,12 @@ ALTER TABLE `category_items`
 --
 ALTER TABLE `client`
   ADD CONSTRAINT `client_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `gps_location_from`
@@ -684,6 +1115,12 @@ ALTER TABLE `items`
   ADD CONSTRAINT `items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `manual_verifications`
+--
+ALTER TABLE `manual_verifications`
+  ADD CONSTRAINT `manual_verifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
 -- Constraints for table `messages`
 --
 ALTER TABLE `messages`
@@ -703,6 +1140,12 @@ ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `recommendations`
+--
+ALTER TABLE `recommendations`
+  ADD CONSTRAINT `recommendations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
 -- Constraints for table `rentals`
 --
 ALTER TABLE `rentals`
@@ -710,130 +1153,50 @@ ALTER TABLE `rentals`
   ADD CONSTRAINT `rentals_ibfk_2` FOREIGN KEY (`renter_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `rental_deposits`
+--
+ALTER TABLE `rental_deposits`
+  ADD CONSTRAINT `rental_deposits_ibfk_1` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`id`);
+
+--
+-- Constraints for table `rental_insurance`
+--
+ALTER TABLE `rental_insurance`
+  ADD CONSTRAINT `rental_insurance_ibfk_1` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`id`);
+
+--
+-- Constraints for table `reports`
+--
+ALTER TABLE `reports`
+  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`reported_user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`reporter_user_id`) REFERENCES `users` (`id`);
+
+--
 -- Constraints for table `reviews`
 --
 ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`rental_id`) REFERENCES `rentals` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`reviewer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_documents`
+--
+ALTER TABLE `user_documents`
+  ADD CONSTRAINT `user_documents_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `user_verifications`
+--
+ALTER TABLE `user_verifications`
+  ADD CONSTRAINT `user_verifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `verification_codes`
+--
+ALTER TABLE `verification_codes`
+  ADD CONSTRAINT `verification_codes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
---
--- create a barter table
---
-CREATE TABLE barters (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    item_id INT,
-    barter_item_id INT, -- The item being offered for barter
-    renter_id INT, -- The person who is offering the barter
-    start_date DATE,
-    end_date DATE,
-    status ENUM('pending', 'approved', 'returned') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items(id),
-    FOREIGN KEY (barter_item_id) REFERENCES items(id),
-    FOREIGN KEY (renter_id) REFERENCES users(id)
-);
-
--- Schedule verification via email and phone
-CREATE TABLE verification_codes (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    code VARCHAR(10) NOT NULL,
-    expiration DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE user_verifications (
-    user_id INT PRIMARY KEY,
-    verified_email BOOLEAN DEFAULT FALSE,
-    verified_phone BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Document upload schedule
-CREATE TABLE user_documents (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    document_type VARCHAR(50),
-    document_path VARCHAR(255),
-    verified_status ENUM('pending', 'rejected', 'approved') DEFAULT 'pending',
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Manual verification schedule
-CREATE TABLE manual_verifications (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    status ENUM('pending', 'rejected', 'approved') DEFAULT 'pending',
-    reviewer_id INT,
-    review_notes TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Security deposit table
-
-CREATE TABLE rental_deposits (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    rental_id INT NOT NULL,
-    deposit_amount DECIMAL(10, 2),
-    status ENUM('held', 'deducted', 'refunded') DEFAULT 'held',
-    FOREIGN KEY (rental_id) REFERENCES rentals(id)
-);
-
--- Item insurance schedule
-CREATE TABLE rental_insurance (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    rental_id INT NOT NULL,
-    insurance_fee DECIMAL(10, 2),
-    insurance_status ENUM('active', 'expired') DEFAULT 'active',
-    policy_details TEXT,
-    FOREIGN KEY (rental_id) REFERENCES rentals(id)
-);
-
--- Damage coverage policy schedule
-CREATE TABLE damage_policies (
-    policy_id INT PRIMARY KEY AUTO_INCREMENT,
-    description TEXT,
-    minor_damage_fee DECIMAL(10, 2),
-    major_damage_fee DECIMAL(10, 2)
-);
-
---User reporting table
-CREATE TABLE reports (
-    report_id INT PRIMARY KEY AUTO_INCREMENT,
-    reported_user_id INT NOT NULL,
-    reporter_user_id INT NOT NULL,
-    reason TEXT,
-    evidence_path VARCHAR(255),
-    status ENUM('pending', 'rejected', 'approved') DEFAULT 'pending',
-    FOREIGN KEY (reported_user_id) REFERENCES users(id),
-    FOREIGN KEY (reporter_user_id) REFERENCES users(id)
-);
-
---Complaint review table
-CREATE TABLE report_reviews (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    report_id INT NOT NULL,
-    reviewer_id INT,
-    action_taken TEXT,
-    notes TEXT,
-    FOREIGN KEY (report_id) REFERENCES reports(report_id)
-);
-
-
-INSERT INTO verification_codes (user_id, code, expiration) VALUES (1, '123456', '2024-11-05 10:00:00'), (2, '789101', '2024-11-06 11:00:00');
-
-INSERT INTO user_verifications (user_id, verified_email, verified_phone) VALUES (1, TRUE, FALSE), (2, FALSE, FALSE);
-
-INSERT INTO user_documents (user_id, document_type, document_path, verified_status) VALUES (1, 'identity', '/uploads/identity_user1.pdf', 'approved'), (2, 'license', '/uploads/license_user2.pdf', 'pending');
-
-INSERT INTO manual_verifications (user_id, status, reviewer_id, review_notes) VALUES (1, 'approved', 3, 'Verified manually.'), (2, 'pending', NULL, 'Awaiting manual verification.');
-
-INSERT INTO damage_policies (description, minor_damage_fee, major_damage_fee) VALUES ('Standard Damage Policy', 50.00, 200.00), ('Premium Damage Policy', 100.00, 500.00);
-
- INSERT INTO `rentals` (`id`, `item_id`, `renter_id`, `start_date`, `end_date`, `total_price`, `status`) VALUES (1, 1, 2, '2024-10-01', '2024-10-05', 75.00, 'approved'), (2, 3, 1, '2024-10-06', '2024-10-10', 250.00, 'returned'), (3, 5, 4, '2024-10-11', '2024-10-15', 100.00, 'pending'), (4, 2, 3, '2024-10-16', '2024-10-20', 50.00, 'approved'), (5, 4, 5, '2024-10-21', '2024-10-25', 10.00, 'approved'), (6, 6, 6, '2024-10-26', '2024-10-30', 125.00, 'returned'), (7, 7, 7, '2024-11-01', '2024-11-05', 75.00, 'pending'), (8, 8, 8, '2024-11-06', '2024-11-10', 40.00, 'approved'), (9, 9, 9, '2024-11-11', '2024-11-15', 15.00, 'approved'), (10, 10, 10, '2024-11-16', '2024-11-20', 60.00, 'pending');
