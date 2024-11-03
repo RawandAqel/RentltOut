@@ -802,8 +802,8 @@ CREATE TABLE damage_policies (
     minor_damage_fee DECIMAL(10, 2),
     major_damage_fee DECIMAL(10, 2)
 );
-
---User reporting table
+-- User reporting table 
+ 
 CREATE TABLE reports (
     report_id INT PRIMARY KEY AUTO_INCREMENT,
     reported_user_id INT NOT NULL,
