@@ -92,6 +92,7 @@ CREATE TABLE `barters` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- --------------------------------------------------------
 
 --
@@ -610,6 +611,32 @@ CREATE TABLE `reports` (
   `evidence_path` varchar(255) DEFAULT NULL,
   `status` enum('pending','rejected','approved') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- --------------------------------------------------------
+--
+-- Table structure for table `revenue`
+--
+CREATE TABLE revenue (
+    revenueID INT AUTO_INCREMENT PRIMARY KEY,
+    rentalID int(11) NOT NULL,
+    platformRevenue DECIMAL(10, 2) NOT NULL,
+    ownerRevenue DECIMAL(10, 2) NOT NULL,
+    revenueDate DATE NOT NULL DEFAULT CURRENT_DATE
+);
+ALTER TABLE rentals ADD INDEX (id);
+ALTER TABLE revenue
+ADD CONSTRAINT fk_rentalID
+FOREIGN KEY (rentalID) REFERENCES rentals(id);
+
+--
+-- Dumping data for table `revenue`
+--
+
+INSERT INTO revenue (rentalID, platformRevenue, ownerRevenue, revenueDate) VALUES
+(1, 6.00, 54.00, '2024-11-01'),  -- 10%  60.00
+(2, 5.00, 45.00, '2024-11-02'),  -- 10%  50.00
+(5, 14.00, 126.00, '2024-11-01'), -- 10%  140.00
+(6, 17.50, 157.50, '2024-11-02'), -- 10%  175.00
+(9, 2.40, 21.60, '2024-11-01');   -- 10%  24.00
 
 -- --------------------------------------------------------
 
@@ -878,6 +905,7 @@ ALTER TABLE `rentals`
   ADD PRIMARY KEY (`id`),
   ADD KEY `item_id` (`item_id`),
   ADD KEY `renter_id` (`renter_id`);
+  
 
 --
 -- Indexes for table `rental_deposits`
@@ -1253,3 +1281,22 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+--
+-- Dumping data for table `barters`
+--
+
+INSERT INTO barters (item_id, barter_item_id, renter_id, start_date, end_date, status)
+VALUES
+(1, 2, 1, '2024-11-01', '2024-11-10', 'pending'),
+(3, 4, 2, '2024-11-05', '2024-11-15', 'approved'),
+(5, 6, 3, '2024-11-08', '2024-11-18', 'returned'),
+(7, 8, 1, '2024-11-12', '2024-11-22', 'pending'),
+(9, 10, 4, '2024-11-15', '2024-11-25', 'approved'),
+(11, 12, 5, '2024-11-17', '2024-11-27', 'pending'),
+(13, 14, 2, '2024-11-20', '2024-11-30', 'returned'),
+(15, 16, 6, '2024-11-23', '2024-12-03', 'approved'),
+(17, 18, 3, '2024-11-25', '2024-12-05', 'pending'),
+(19, 20, 4, '2024-11-28', '2024-12-08', 'approved');
