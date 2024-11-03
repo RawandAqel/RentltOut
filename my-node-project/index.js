@@ -9,7 +9,12 @@ const logoutRoutes = require('./routes/users/logout');
 // Items
 const get_all_itemsRoutes = require('./routes/items/get_all_items'); 
 const items_filterRoutes = require('./routes/items/items_filter'); 
-
+// logistics
+const logisticsRoutes = require('./routes/logistics/logisticsRoutes');
+//weathe
+const weatherRoutes = require('./routes/weather/weatherController');
+// chat 
+const chatRoutes = require('./routes/chat/chat'); 
 const app = express();
 
 // Middleware to parse JSON
@@ -60,7 +65,9 @@ app.use('/api', Log_activity);
 app.use('/api', Get_activity);
 app.use('/api', Get_Trending);
 
-
+app.use('/api', logisticsRoutes);
+// chat
+app.use('/api/chat', chatRoutes);
 
 
 
@@ -92,6 +99,8 @@ connection.connect((err) => {
     }
     console.log('Connected to MySQL database');
 });
+
+app.get('/api/weather/:city', weatherRoutes.getWeather);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
