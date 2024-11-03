@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2024 at 03:47 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: Nov 03, 2024 at 04:53 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -418,6 +418,33 @@ INSERT INTO `location` (`id`, `city`, `state`, `country`, `postal_code`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `logistics`
+--
+
+CREATE TABLE `logistics` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `pickupLocation` varchar(255) DEFAULT NULL,
+  `deliveryAddress` varchar(255) DEFAULT NULL,
+  `deliveryOption` enum('pickup','delivery') DEFAULT NULL,
+  `status` enum('pending','completed','in_progress') DEFAULT 'pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `logistics`
+--
+
+INSERT INTO `logistics` (`id`, `userId`, `pickupLocation`, `deliveryAddress`, `deliveryOption`, `status`) VALUES
+(1, 1, 'Location A', 'Address A', 'pickup', 'pending'),
+(2, 2, 'Location B', 'Address B', 'delivery', 'in_progress'),
+(3, 3, 'Location C', 'Address C', 'pickup', 'in_progress'),
+(4, 4, 'Location D', 'Address D', 'delivery', 'pending'),
+(5, 5, 'Location E', 'Address E', 'pickup', 'in_progress'),
+(6, 3, '123 Main St', '456 Elm St', '', 'pending');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `manual_verifications`
 --
 
@@ -450,6 +477,13 @@ CREATE TABLE `messages` (
   `message` text NOT NULL,
   `sent_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `message`, `sent_at`) VALUES
+(1, 4, 6, 'مرحبا! كيف حالك؟', '2024-11-03 15:52:12');
 
 -- --------------------------------------------------------
 
@@ -795,6 +829,13 @@ ALTER TABLE `location`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `logistics`
+--
+ALTER TABLE `logistics`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userId` (`userId`);
+
+--
 -- Indexes for table `manual_verifications`
 --
 ALTER TABLE `manual_verifications`
@@ -973,6 +1014,12 @@ ALTER TABLE `location`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
+-- AUTO_INCREMENT for table `logistics`
+--
+ALTER TABLE `logistics`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `manual_verifications`
 --
 ALTER TABLE `manual_verifications`
@@ -982,7 +1029,7 @@ ALTER TABLE `manual_verifications`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -1113,6 +1160,12 @@ ALTER TABLE `gps_location_to`
 --
 ALTER TABLE `items`
   ADD CONSTRAINT `items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `logistics`
+--
+ALTER TABLE `logistics`
+  ADD CONSTRAINT `logistics_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `manual_verifications`
