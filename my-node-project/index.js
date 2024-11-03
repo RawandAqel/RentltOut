@@ -78,8 +78,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', require('./routes/rentals_barters_managment/rentals_routes/get_user_available_items'));  // Get available items for users
 app.use('/api', require('./routes/rentals_barters_managment/rentals_routes/creation_rentals'));  // Rental-related routes
 app.use('/api', require('./routes/rentals_barters_managment/rentals_routes/status_update'));  //change (rentals-barters-item availability) status
-
-
+app.use('/api', require('./routes/rentals_barters_managment/delete_rentals'));  //delete rentals or barters
+app.use('/api', require('./routes/rentals_barters_managment/rentals_routes/status_update'));  //change (rentals-barters-item availability) status
+app.use('/api', require('./routes/rentals_barters_managment/update_rentals_informations'));  //change information in rentals-barters
 
 
 
