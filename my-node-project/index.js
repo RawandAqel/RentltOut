@@ -82,6 +82,10 @@ app.use('/api', require('./routes/rentals_barters_managment/delete_rentals'));  
 app.use('/api', require('./routes/rentals_barters_managment/rentals_routes/status_update'));  //change (rentals-barters-item availability) status
 app.use('/api', require('./routes/rentals_barters_managment/update_rentals_informations'));  //change information in rentals-barters
 
+//revenue routes...aseel
+app.use('/api', require('./routes/revenues/users_revenue'));  //show users revenues
+app.use('/api', require('./routes/revenues/platform_revenue'));  //show platform revenue
+app.use('/api', require('./routes/revenues/User_records'));  //show user records
 
 
 // Connect to MySQL
