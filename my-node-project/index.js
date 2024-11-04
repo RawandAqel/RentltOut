@@ -69,6 +69,10 @@ app.use('/api', logisticsRoutes);
 // chat
 app.use('/api/chat', chatRoutes);
 
+// Import reminder module
+require('./routes/reminders/reminder');
+const remindersRoutes = require('./routes/reminders/reminder'); 
+app.use('/api/reminders', remindersRoutes);
 
 
 

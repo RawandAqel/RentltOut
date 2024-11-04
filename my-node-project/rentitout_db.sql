@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2024 at 04:53 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.0.28
+-- Generation Time: Nov 04, 2024 at 03:00 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -92,6 +92,21 @@ CREATE TABLE `barters` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `barters`
+--
+
+INSERT INTO `barters` (`id`, `item_id`, `barter_item_id`, `renter_id`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, 1, '2024-11-01', '2024-11-10', 'pending', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(2, 3, 4, 2, '2024-11-05', '2024-11-15', 'approved', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(3, 5, 6, 3, '2024-11-08', '2024-11-18', 'returned', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(4, 7, 8, 1, '2024-11-12', '2024-11-22', 'pending', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(5, 9, 10, 4, '2024-11-15', '2024-11-25', 'approved', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(6, 11, 12, 5, '2024-11-17', '2024-11-27', 'pending', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(7, 13, 14, 2, '2024-11-20', '2024-11-30', 'returned', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(8, 15, 16, 6, '2024-11-23', '2024-12-03', 'approved', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(9, 17, 18, 3, '2024-11-25', '2024-12-05', 'pending', '2024-11-04 13:55:31', '2024-11-04 13:55:31'),
+(10, 19, 20, 4, '2024-11-28', '2024-12-08', 'approved', '2024-11-04 13:55:31', '2024-11-04 13:55:31');
 
 -- --------------------------------------------------------
 
@@ -500,6 +515,13 @@ CREATE TABLE `notifications` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`) VALUES
+(1, 1, 'Your rental is due tomorrow.', 0, '2024-11-04 13:57:08');
+
 -- --------------------------------------------------------
 
 --
@@ -611,32 +633,31 @@ CREATE TABLE `reports` (
   `evidence_path` varchar(255) DEFAULT NULL,
   `status` enum('pending','rejected','approved') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
+
 --
 -- Table structure for table `revenue`
 --
-CREATE TABLE revenue (
-    revenueID INT AUTO_INCREMENT PRIMARY KEY,
-    rentalID int(11) NOT NULL,
-    platformRevenue DECIMAL(10, 2) NOT NULL,
-    ownerRevenue DECIMAL(10, 2) NOT NULL,
-    revenueDate DATE NOT NULL DEFAULT CURRENT_DATE
-);
-ALTER TABLE rentals ADD INDEX (id);
-ALTER TABLE revenue
-ADD CONSTRAINT fk_rentalID
-FOREIGN KEY (rentalID) REFERENCES rentals(id);
+
+CREATE TABLE `revenue` (
+  `revenueID` int(11) NOT NULL,
+  `rentalID` int(11) NOT NULL,
+  `platformRevenue` decimal(10,2) NOT NULL,
+  `ownerRevenue` decimal(10,2) NOT NULL,
+  `revenueDate` date NOT NULL DEFAULT curdate()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `revenue`
 --
 
-INSERT INTO revenue (rentalID, platformRevenue, ownerRevenue, revenueDate) VALUES
-(1, 6.00, 54.00, '2024-11-01'),  -- 10%  60.00
-(2, 5.00, 45.00, '2024-11-02'),  -- 10%  50.00
-(5, 14.00, 126.00, '2024-11-01'), -- 10%  140.00
-(6, 17.50, 157.50, '2024-11-02'), -- 10%  175.00
-(9, 2.40, 21.60, '2024-11-01');   -- 10%  24.00
+INSERT INTO `revenue` (`revenueID`, `rentalID`, `platformRevenue`, `ownerRevenue`, `revenueDate`) VALUES
+(1, 1, 6.00, 54.00, '2024-11-01'),
+(2, 2, 5.00, 45.00, '2024-11-02'),
+(3, 5, 14.00, 126.00, '2024-11-01'),
+(4, 6, 17.50, 157.50, '2024-11-02'),
+(5, 9, 2.40, 21.60, '2024-11-01');
 
 -- --------------------------------------------------------
 
@@ -903,9 +924,9 @@ ALTER TABLE `recommendations`
 --
 ALTER TABLE `rentals`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `id` (`id`),
   ADD KEY `item_id` (`item_id`),
   ADD KEY `renter_id` (`renter_id`);
-  
 
 --
 -- Indexes for table `rental_deposits`
@@ -928,6 +949,13 @@ ALTER TABLE `reports`
   ADD PRIMARY KEY (`report_id`),
   ADD KEY `reported_user_id` (`reported_user_id`),
   ADD KEY `reporter_user_id` (`reporter_user_id`);
+
+--
+-- Indexes for table `revenue`
+--
+ALTER TABLE `revenue`
+  ADD PRIMARY KEY (`revenueID`),
+  ADD KEY `fk_rentalID` (`rentalID`);
 
 --
 -- Indexes for table `reviews`
@@ -985,7 +1013,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `barters`
 --
 ALTER TABLE `barters`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -1063,7 +1091,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -1100,6 +1128,12 @@ ALTER TABLE `rental_insurance`
 --
 ALTER TABLE `reports`
   MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `revenue`
+--
+ALTER TABLE `revenue`
+  MODIFY `revenueID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -1253,6 +1287,12 @@ ALTER TABLE `reports`
   ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`reporter_user_id`) REFERENCES `users` (`id`);
 
 --
+-- Constraints for table `revenue`
+--
+ALTER TABLE `revenue`
+  ADD CONSTRAINT `fk_rentalID` FOREIGN KEY (`rentalID`) REFERENCES `rentals` (`id`);
+
+--
 -- Constraints for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -1281,22 +1321,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-
---
--- Dumping data for table `barters`
---
-
-INSERT INTO barters (item_id, barter_item_id, renter_id, start_date, end_date, status)
-VALUES
-(1, 2, 1, '2024-11-01', '2024-11-10', 'pending'),
-(3, 4, 2, '2024-11-05', '2024-11-15', 'approved'),
-(5, 6, 3, '2024-11-08', '2024-11-18', 'returned'),
-(7, 8, 1, '2024-11-12', '2024-11-22', 'pending'),
-(9, 10, 4, '2024-11-15', '2024-11-25', 'approved'),
-(11, 12, 5, '2024-11-17', '2024-11-27', 'pending'),
-(13, 14, 2, '2024-11-20', '2024-11-30', 'returned'),
-(15, 16, 6, '2024-11-23', '2024-12-03', 'approved'),
-(17, 18, 3, '2024-11-25', '2024-12-05', 'pending'),
-(19, 20, 4, '2024-11-28', '2024-12-08', 'approved');
