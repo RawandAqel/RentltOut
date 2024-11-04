@@ -88,6 +88,10 @@ app.use('/api', require('./routes/revenues/platform_revenue'));  //show platform
 app.use('/api', require('./routes/revenues/User_records'));  //show user records
 
 
+//payment routes...aseel
+app.use('/api', require('./routes/payment_process/create_new_payment'));  //pyment for rental
+
+
 // Connect to MySQL
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
