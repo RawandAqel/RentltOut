@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2024 at 03:00 PM
+-- Generation Time: Nov 08, 2024 at 05:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -216,7 +216,11 @@ INSERT INTO `client` (`id`, `user_id`, `phone_number`, `address`) VALUES
 (22, 23, '+970599159357', '987 Hana Street, City'),
 (23, 24, '+970599951357', '357 Tareq Street, City'),
 (24, 25, '+970599357852', '654 Noor Street, City'),
-(25, 3, '+970599124987', '369 Rami Street, City');
+(25, 3, '+970599124987', '369 Rami Street, City'),
+(26, 26, '05986221556', 'kuferqaddum'),
+(27, 29, '123456AAbb', '144 ss'),
+(28, 33, '05986221556', 'kuferqaddum'),
+(29, 34, '05986221555', 'kuferqaddum');
 
 -- --------------------------------------------------------
 
@@ -634,6 +638,30 @@ CREATE TABLE `reports` (
   `status` enum('pending','rejected','approved') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `reports`
+--
+
+INSERT INTO `reports` (`report_id`, `reported_user_id`, `reporter_user_id`, `reason`, `evidence_path`, `status`) VALUES
+(1, 2, 1, 'Spam', '/images/evidence.png', 'pending'),
+(2, 2, 1, 'Spam', '/images/evidence.png', 'pending'),
+(3, 1, 3, 'dkkd', '/images/evidence.png', 'pending'),
+(4, 2, 3, 'lll', '/images/evidence.png', 'pending');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_reviews`
+--
+
+CREATE TABLE `report_reviews` (
+  `id` int(11) NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `reviewer_id` int(11) DEFAULT NULL,
+  `action_taken` text DEFAULT NULL,
+  `notes` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -697,7 +725,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`, `login_token`, `created_at`, `updated_at`) VALUES
 (1, 'ahmad123', 'password1', 'ahmad@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
-(2, 'mohammad123', 'password2', 'mohammad@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
+(2, 'mohammad123', 'password2', 'mohammad@gmail.com', '', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IiIsImlhdCI6MTczMTA1MjcwMCwiZXhwIjoxNzMxMDU2MzAwfQ.CiG53urTyHh_uCs-s6-h78hf1OJvRFgHCg56UUlmhDw', '2024-10-06 01:29:04', '2024-11-08 07:58:20'),
 (3, 'rami123', 'password3', 'rami@gmail.com', 'admin', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
 (4, 'yara123', 'password4', 'yara@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
 (5, 'aya123', 'password5', 'aya@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
@@ -720,7 +748,11 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`, `login_token
 (22, 'zain123', 'password22', 'zain@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
 (23, 'hana123', 'password23', 'hana@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
 (24, 'tareq123', 'password24', 'tareq@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
-(25, 'noor123', 'password25', 'noor@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04');
+(25, 'noor123', 'password25', 'noor@gmail.com', '', '', '2024-10-06 01:29:04', '2024-10-06 01:29:04'),
+(26, 'shifaa', 'opy123654***@KK', 'barsh@gmail.com', 'client', '', '2024-11-08 07:15:13', '2024-11-08 07:15:13'),
+(29, 'john', 'john1234*', 'john2@gmail.com', 'client', '', '2024-11-08 08:01:48', '2024-11-08 08:01:48'),
+(33, 'shisfkfs', '123456', 'basfkkf@gmail.com', 'client', '', '2024-11-08 08:13:52', '2024-11-08 08:13:52'),
+(34, 'aaaaaaa', '12345', 'aaaaa@gmail.com', 'client', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE3MzEwNTM3MjYsImV4cCI6MTczMTA1NzMyNn0._KKpfThuTYzqeHirC4yupUhkNUPZ4up0VlLISZ6XlRs', '2024-11-08 08:15:05', '2024-11-08 08:15:26');
 
 -- --------------------------------------------------------
 
@@ -783,7 +815,14 @@ CREATE TABLE `verification_codes` (
 
 INSERT INTO `verification_codes` (`id`, `user_id`, `code`, `expiration`) VALUES
 (1, 1, '123456', '2024-11-05 10:00:00'),
-(2, 2, '789101', '2024-11-06 11:00:00');
+(2, 2, '789101', '2024-11-06 11:00:00'),
+(3, 1, '700923', '2024-11-08 17:10:45'),
+(4, 1, '554776', '2024-11-08 18:12:09'),
+(5, 1, '300866', '2024-11-08 18:12:55'),
+(6, 1, '816798', '2024-11-08 18:21:13'),
+(7, 2, '180138', '2024-11-08 18:26:43'),
+(8, 3, '985169', '2024-11-08 18:30:41'),
+(9, 1, '192618', '2024-11-08 18:32:11');
 
 --
 -- Indexes for dumped tables
@@ -951,6 +990,13 @@ ALTER TABLE `reports`
   ADD KEY `reporter_user_id` (`reporter_user_id`);
 
 --
+-- Indexes for table `report_reviews`
+--
+ALTER TABLE `report_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `report_id` (`report_id`);
+
+--
 -- Indexes for table `revenue`
 --
 ALTER TABLE `revenue`
@@ -1031,7 +1077,7 @@ ALTER TABLE `category_items`
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `damage_policies`
@@ -1127,7 +1173,13 @@ ALTER TABLE `rental_insurance`
 -- AUTO_INCREMENT for table `reports`
 --
 ALTER TABLE `reports`
-  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `report_reviews`
+--
+ALTER TABLE `report_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `revenue`
@@ -1145,7 +1197,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `user_documents`
@@ -1157,7 +1209,7 @@ ALTER TABLE `user_documents`
 -- AUTO_INCREMENT for table `verification_codes`
 --
 ALTER TABLE `verification_codes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -1285,6 +1337,12 @@ ALTER TABLE `rental_insurance`
 ALTER TABLE `reports`
   ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`reported_user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`reporter_user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `report_reviews`
+--
+ALTER TABLE `report_reviews`
+  ADD CONSTRAINT `report_reviews_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `reports` (`report_id`);
 
 --
 -- Constraints for table `revenue`
