@@ -17,6 +17,10 @@ const weatherRoutes = require('./routes/weather/weatherController');
 const chatRoutes = require('./routes/chat/chat'); 
 const app = express();
 
+//impor cors library
+const cors = require('cors'); 
+app.use(cors()); 
+
 // Middleware to parse JSON
 app.use(express.json());
 
